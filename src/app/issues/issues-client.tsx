@@ -1,7 +1,7 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { format } from "date-fns";
 import { RaiseIssueDialog } from "@/components/raise-issue-dialog";
 import { InferSelectModel } from "drizzle-orm";
@@ -47,12 +47,12 @@ function IssueList({
                 <TableHead>Title</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Deadline</TableHead>
-                <TableHead className="w-[100px] text-right">Action</TableHead>
+                <TableHead className="w-25 text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {issues.map((issue) => (
-                <TableRow 
+                <TableRow
                   key={issue.id}
                   className="cursor-pointer"
                   onClick={() => router.push(`/issues/${issue.id}`)}
@@ -97,7 +97,6 @@ export function IssuesClient({
   role: "client" | "developer";
   activeTab?: string;
 }) {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -122,12 +121,23 @@ export function IssuesClient({
   );
 
   // default tab
-  const tab = activeTab || (role === "client" ? "pending" : "open");
+  const [tab, setTab] = useState(
+    activeTab || (role === "client" ? "pending" : "open"),
+  );
+  const [prevActiveTab, setPrevActiveTab] = useState(activeTab);
+
+  if (activeTab !== prevActiveTab) {
+    setPrevActiveTab(activeTab);
+    if (activeTab) {
+      setTab(activeTab);
+    }
+  }
 
   const handleTabChange = (value: string) => {
-    const params = new URLSearchParams(searchParams);
+    setTab(value);
+    const params = new URLSearchParams(searchParams.toString());
     params.set("tab", value);
-    router.push(`${pathname}?${params.toString()}`);
+    window.history.pushState(null, "", `${pathname}?${params.toString()}`);
   };
 
   return (
