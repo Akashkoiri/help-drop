@@ -33,6 +33,8 @@ function IssueList({
   emptyMessage: string;
   title?: string;
 }) {
+  const router = useRouter();
+
   return (
     <div className="pt-2">
       {issues.length === 0 ? (
@@ -40,8 +42,8 @@ function IssueList({
       ) : (
         <div className="rounded-md border">
           <Table>
-            <TableHeader>
-              <TableRow>
+            <TableHeader className="bg-muted/50">
+              <TableRow className="hover:bg-transparent">
                 <TableHead>Title</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Deadline</TableHead>
@@ -50,7 +52,11 @@ function IssueList({
             </TableHeader>
             <TableBody>
               {issues.map((issue) => (
-                <TableRow key={issue.id}>
+                <TableRow 
+                  key={issue.id}
+                  className="cursor-pointer"
+                  onClick={() => router.push(`/issues/${issue.id}`)}
+                >
                   <TableCell className="font-medium">{issue.title}</TableCell>
                   <TableCell className="capitalize">{issue.status}</TableCell>
                   <TableCell>
@@ -59,11 +65,9 @@ function IssueList({
                       : "-"}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Link href={`/issues/${issue.id}`}>
-                      <Button variant="outline" size="sm">
-                        View
-                      </Button>
-                    </Link>
+                    <Button variant="ghost" size="icon">
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -75,7 +79,14 @@ function IssueList({
   );
 }
 
-import { CircleDashed, Clock, CheckCircle2, XCircle } from "lucide-react";
+import {
+  CircleDashed,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  ChevronRight,
+  Plus,
+} from "lucide-react";
 
 export function IssuesClient({
   issuesData,
@@ -184,7 +195,10 @@ export function IssuesClient({
 
           {role === "client" && (
             <RaiseIssueDialog>
-              <Button>Raise New Issue</Button>
+              <Button>
+                <Plus />
+                Raise New Issue
+              </Button>
             </RaiseIssueDialog>
           )}
         </div>

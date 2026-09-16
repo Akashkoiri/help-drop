@@ -19,11 +19,6 @@ import {
 
 const items = [
   {
-    title: "Home",
-    url: "/",
-    icon: Home,
-  },
-  {
     title: "Dashboard",
     url: "/dashboard",
     icon: LayoutDashboard,
@@ -33,11 +28,11 @@ const items = [
     url: "/issues",
     icon: FileText,
   },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-  },
+  // {
+  //   title: "Settings",
+  //   url: "/settings",
+  //   icon: Settings,
+  // },
 ];
 
 export function AppSidebar({}: { role?: "client" | "developer" }) {
@@ -45,7 +40,10 @@ export function AppSidebar({}: { role?: "client" | "developer" }) {
   return (
     <Sidebar variant="floating" collapsible="icon">
       <SidebarHeader>
-        <div className="flex items-center gap-3 overflow-hidden px-1 py-2">
+        <Link
+          href="/"
+          className="flex items-center gap-3 overflow-hidden px-1 py-2"
+        >
           <div className="flex items-center justify-center shrink-0 w-9 h-9 transition-all group-data-[collapsible=icon]:w-7 group-data-[collapsible=icon]:h-7">
             <Image
               src="/logo.jpg"
@@ -58,7 +56,7 @@ export function AppSidebar({}: { role?: "client" | "developer" }) {
           <span className="font-bold text-xl tracking-tight group-data-[collapsible=icon]:hidden whitespace-nowrap">
             Help Drop
           </span>
-        </div>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -66,13 +64,14 @@ export function AppSidebar({}: { role?: "client" | "developer" }) {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => {
-                const isActive = item.url === "/" 
-                  ? pathname === item.url 
-                  : pathname.startsWith(item.url);
+                const isActive =
+                  item.url === "/"
+                    ? pathname === item.url
+                    : pathname.startsWith(item.url);
 
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton 
+                    <SidebarMenuButton
                       render={<Link href={item.url} />}
                       isActive={isActive}
                     >

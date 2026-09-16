@@ -144,7 +144,7 @@ export function IssueClient({
         await addRemark(
           issue.id,
           resolveNote || "Issue marked as resolved.",
-          documentUrls
+          documentUrls,
         );
       }
 
@@ -190,141 +190,165 @@ export function IssueClient({
         Back
       </Button>
 
-      <div className="mt-8 md:mt-12">
-        {/* Issue Details Card */}
-        <Card>
-          <CardHeader className="flex flex-row items-start justify-between">
-            <div>
-              <CardTitle className="text-2xl">{issue.title}</CardTitle>
-              <CardDescription className="mt-2">
-                Client:{" "}
-                <span className="font-medium text-foreground">
-                  {userMap[issue.clientId]}
-                </span>{" "}
-                on {format(new Date(issue.createdAt), "PPp")}
-              </CardDescription>
-            </div>
-            <div className="text-right">
-              <span
-                className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                  issue.status === "resolved"
-                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                    : issue.status === "pending"
-                      ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                      : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                }`}
-              >
-                {issue.status.toUpperCase()}
-              </span>
-              {issue.deadline && (
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Deadline: {format(new Date(issue.deadline), "PPp")}
-                </p>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <h3 className="font-semibold text-lg mb-2">Description</h3>
-              <p className="whitespace-pre-wrap text-muted-foreground">
-                {issue.description}
-              </p>
-            </div>
-
-            {issue.documents && issue.documents.length > 0 && (
+      <div className="mt-2 md:mt-4 grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
+        <div className="lg:col-span-2 space-y-8">
+          {/* Issue Details Card */}
+          <Card className="h-full min-h-87.5 flex flex-col">
+            <CardHeader className="flex flex-row items-start justify-between">
               <div>
-                <h3 className="font-semibold text-lg mb-2">
-                  Attached Documents
-                </h3>
-                <div className="flex flex-wrap gap-2">
+                <CardTitle className="text-2xl">{issue.title}</CardTitle>
+                <CardDescription className="mt-4 flex flex-col gap-1.5">
+                  <div>
+                    Client:{" "}
+                    <span className="font-medium text-foreground">
+                      {userMap[issue.clientId]}
+                    </span>
+                  </div>
+                  <div>
+                    Date:{" "}
+                    <span className="font-medium text-foreground">
+                      {format(new Date(issue.createdAt), "PPp")}
+                    </span>
+                  </div>
+                  {issue.deadline && (
+                    <div>
+                      Deadline:{" "}
+                      <span className="font-medium text-foreground">
+                        {format(new Date(issue.deadline), "PPp")}
+                      </span>
+                    </div>
+                  )}
+                </CardDescription>
+              </div>
+              <div className="flex shrink-0">
+                <span
+                  className={`px-3 py-1 text-sm font-semibold rounded-full h-fit ${
+                    issue.status === "resolved"
+                      ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                      : issue.status === "pending"
+                        ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                  }`}
+                >
+                  {issue.status.toUpperCase()}
+                </span>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6 flex-1">
+              <div>
+                <h3 className="font-semibold text-lg mb-2">Description</h3>
+                <p className="whitespace-pre-wrap text-muted-foreground">
+                  {issue.description}
+                </p>
+              </div>
+
+              {issue.developerId && (
+                <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center space-x-4">
+                  <UserCircle className="w-8 h-8 text-amber-500" />
+                  <div>
+                    <p className="text-xs font-bold text-amber-500 uppercase tracking-wider mb-1">
+                      Assigned Developer
+                    </p>
+                    <p className="text-lg font-bold text-foreground leading-none">
+                      {userMap[issue.developerId]}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+            <CardFooter className="flex justify-end space-x-2 mt-auto">
+              {isClient && (
+                <Button
+                  onClick={handleDelete}
+                  disabled={submitting}
+                  variant="destructive"
+                >
+                  {submitting ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4 mr-2" />
+                  )}
+                  Delete
+                </Button>
+              )}
+              {isClient && issue.status === "resolved" && (
+                <Button
+                  onClick={handleClose}
+                  disabled={submitting}
+                  variant="secondary"
+                >
+                  {submitting ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <XCircle className="w-4 h-4 mr-2" />
+                  )}
+                  Close Issue
+                </Button>
+              )}
+              {canSolve && issue.status === "pending" && (
+                <Button onClick={handleStartSolving} disabled={submitting}>
+                  {submitting && (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  )}
+                  Start
+                </Button>
+              )}
+              {(isClient || isDeveloper) && issue.status === "pending" && (
+                <Button
+                  onClick={handleMarkResolved}
+                  disabled={submitting}
+                  variant="default"
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  {submitting ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                  )}
+                  Mark as Resolved
+                </Button>
+              )}
+            </CardFooter>
+          </Card>
+        </div>
+
+        <div className="lg:col-span-1 space-y-8 h-full">
+          {issue.documents && issue.documents.length > 0 && (
+            <Card className="h-full min-h-[350px] flex flex-col">
+              <CardHeader>
+                <CardTitle className="text-lg">Related Documents</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 overflow-y-auto max-h-[350px] pr-2">
+                <div className="flex flex-col gap-2">
                   {issue.documents.map((doc: string, idx: number) => (
                     <a
                       key={idx}
                       href={doc}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center p-2 border rounded-md hover:bg-muted text-sm transition-colors"
+                      className="flex items-center justify-between p-2 border rounded-md hover:bg-muted text-sm transition-colors"
                     >
-                      <Paperclip className="w-4 h-4 mr-2" />
-                      Document {idx + 1}
-                      <ExternalLink className="w-3 h-3 ml-2 text-muted-foreground" />
+                      <div className="flex items-center">
+                        <Paperclip className="w-4 h-4 mr-2 shrink-0" />
+                        <span className="truncate">Document {idx + 1}</span>
+                      </div>
+                      <ExternalLink className="w-3 h-3 ml-2 text-muted-foreground shrink-0" />
                     </a>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {issue.developerId && (
-              <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center space-x-4">
-                <UserCircle className="w-8 h-8 text-amber-500" />
-                <div>
-                  <p className="text-xs font-bold text-amber-500 uppercase tracking-wider mb-1">
-                    Assigned Developer
-                  </p>
-                  <p className="text-lg font-bold text-foreground leading-none">
-                    {userMap[issue.developerId]}
-                  </p>
-                </div>
-              </div>
-            )}
-          </CardContent>
-          <CardFooter className="flex justify-end space-x-2">
-            {isClient && (
-              <Button
-                onClick={handleDelete}
-                disabled={submitting}
-                variant="destructive"
-              >
-                {submitting ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Trash2 className="w-4 h-4 mr-2" />
-                )}
-                Delete
-              </Button>
-            )}
-            {isClient && issue.status === "resolved" && (
-              <Button
-                onClick={handleClose}
-                disabled={submitting}
-                variant="secondary"
-              >
-                {submitting ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <XCircle className="w-4 h-4 mr-2" />
-                )}
-                Close Issue
-              </Button>
-            )}
-            {canSolve && issue.status === "pending" && (
-              <Button onClick={handleStartSolving} disabled={submitting}>
-                {submitting && (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                )}
-                Start
-              </Button>
-            )}
-            {(isClient || isDeveloper) && issue.status === "pending" && (
-              <Button
-                onClick={handleMarkResolved}
-                disabled={submitting}
-                variant="default"
-                className="bg-green-600 hover:bg-green-700 text-white"
-              >
-                {submitting ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                )}
-                Mark as Resolved
-              </Button>
-            )}
-          </CardFooter>
-        </Card>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mt-8">
+      <div
+        className={`grid grid-cols-1 gap-5 items-start mt-8 ${
+          issue.status === "pending" && (isClient || isDeveloper)
+            ? "lg:grid-cols-2"
+            : ""
+        }`}
+      >
         {/* Remarks Section */}
         <div className="space-y-4">
           <h3 className="text-xl font-bold">Remarks & Updates</h3>
@@ -384,15 +408,18 @@ export function IssueClient({
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleAddRemark} className="space-y-4">
-                  <Textarea
-                    placeholder="Type your update here..."
-                    value={remarkText}
-                    onChange={(e) => setRemarkText(e.target.value)}
-                  />
-                  <div className="pt-2">
+                  <div>
                     <Label className="mb-2 block">
-                      Attach Documents (Optional)
+                      Remark <span className="text-destructive">*</span>
                     </Label>
+                    <Textarea
+                      placeholder="Type your update here..."
+                      value={remarkText}
+                      onChange={(e) => setRemarkText(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label className="mb-2 block">Attach Documents</Label>
                     <FileUpload value={files} onChange={setFiles} />
                   </div>
                   <Button
@@ -416,12 +443,13 @@ export function IssueClient({
           <DialogHeader>
             <DialogTitle>Mark as Resolved</DialogTitle>
             <DialogDescription>
-              Add an optional note and files before marking this issue as resolved.
+              Add an optional note and files before marking this issue as
+              resolved.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleResolveSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label>Closing Note (Optional)</Label>
+              <Label>Closing Note</Label>
               <Textarea
                 placeholder="Type your resolution note here..."
                 value={resolveNote}
@@ -429,15 +457,22 @@ export function IssueClient({
               />
             </div>
             <div className="space-y-2">
-              <Label>Attach Documents (Optional)</Label>
+              <Label>Attach Documents</Label>
               <FileUpload value={resolveFiles} onChange={setResolveFiles} />
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setResolveModalOpen(false)} disabled={submitting}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setResolveModalOpen(false)}
+                disabled={submitting}
+              >
                 Cancel
               </Button>
               <Button type="submit" disabled={submitting}>
-                {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                {submitting && (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                )}
                 Confirm Resolve
               </Button>
             </DialogFooter>

@@ -26,29 +26,6 @@ export function ClientLayout({
   if (isHomePage || isAuthPage) {
     return (
       <main className="flex-1 w-full h-full flex flex-col">
-        {isHomePage && (
-          <header className="flex justify-end items-center p-4 h-16 shrink-0 absolute top-0 right-0 w-full">
-            <div className="flex items-center gap-4">
-              <ModeToggle />
-              {isLoaded && !isSignedIn && (
-                <>
-                  <SignInButton />
-                  <SignUpButton />
-                </>
-              )}
-              {isLoaded && isSignedIn && (
-                <>
-                  {role && (
-                    <span className="text-sm font-medium text-muted-foreground capitalize">
-                      {role}
-                    </span>
-                  )}
-                  <UserButton />
-                </>
-              )}
-            </div>
-          </header>
-        )}
         {children}
       </main>
     );

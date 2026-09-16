@@ -162,16 +162,16 @@ export function DashboardClient({
           value={activeMetrics.total}
           icon={FileText}
         />
-        <StatCard
-          title="Resolved"
-          value={activeMetrics.resolved}
-          icon={CheckCircle2}
-        />
         <StatCard title="Pending" value={activeMetrics.pending} icon={Clock} />
         <StatCard
           title="Overdue"
           value={activeMetrics.overdue}
           icon={AlertCircle}
+        />
+        <StatCard
+          title="Resolved"
+          value={activeMetrics.resolved}
+          icon={CheckCircle2}
         />
       </div>
 
