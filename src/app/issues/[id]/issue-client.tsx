@@ -224,10 +224,10 @@ export function IssueClient({
                 <span
                   className={`px-3 py-1 text-sm font-semibold rounded-full h-fit ${
                     issue.status === "resolved"
-                      ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                      ? `bg-green-100 text-green-800 ${"dark:bg-green-900 dark:text-green-200"}`
                       : issue.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                        ? `bg-yellow-100 text-yellow-800 ${"dark:bg-yellow-900 dark:text-yellow-200"}`
+                        : `bg-red-100 text-red-800 ${"dark:bg-red-900 dark:text-red-200"}`
                   }`}
                 >
                   {issue.status.toUpperCase()}
@@ -314,11 +314,11 @@ export function IssueClient({
 
         <div className="lg:col-span-1 space-y-8 h-full">
           {issue.documents && issue.documents.length > 0 && (
-            <Card className="h-full min-h-[350px] flex flex-col">
+            <Card className="h-full min-h-87.5 flex flex-col">
               <CardHeader>
                 <CardTitle className="text-lg">Related Documents</CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 overflow-y-auto max-h-[350px] pr-2">
+              <CardContent className="flex-1 overflow-y-auto max-h-87.5 pr-2">
                 <div className="flex flex-col gap-2">
                   {issue.documents.map((doc: string, idx: number) => (
                     <a
@@ -356,7 +356,7 @@ export function IssueClient({
           {remarks.length === 0 ? (
             <p className="text-muted-foreground italic">No remarks yet.</p>
           ) : (
-            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+            <div className="space-y-4 max-h-150 overflow-y-auto pr-2">
               {remarks.map((r) => (
                 <Card key={r.id}>
                   <CardHeader className="py-3">

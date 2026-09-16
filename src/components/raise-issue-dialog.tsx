@@ -82,7 +82,7 @@ export function RaiseIssueDialog({ children }: { children: React.ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={children as React.ReactElement} />
-      <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-137.5 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Raise an Issue</DialogTitle>
           <DialogDescription>
@@ -112,7 +112,7 @@ export function RaiseIssueDialog({ children }: { children: React.ReactNode }) {
               name="description"
               required
               placeholder="Describe the issue in detail..."
-              className="min-h-[100px]"
+              className="min-h-25"
             />
           </div>
 

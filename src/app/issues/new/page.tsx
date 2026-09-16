@@ -109,7 +109,7 @@ export default function NewIssuePage() {
                 name="description"
                 required
                 placeholder="Describe the issue in detail..."
-                className="min-h-[150px]"
+                className="min-h-37.5"
               />
             </div>
 
